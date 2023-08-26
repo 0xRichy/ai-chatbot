@@ -25,7 +25,30 @@
     {% endif %}
 
     <script>
-        // ...
+        const chatForm = document.getElementById("chat-form");
+        const userInput = document.getElementById("user-input");
+        const chatOutput = document.getElementById("chat-output");
+
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userMessage = userInput.value;
+            userInput.value = "";
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `user_input=${userMessage}`,
+            });
+
+            const responseData = await response.json();
+            const chatbotMessage = responseData.response;
+
+            const messageElement = document.createElement("p");
+            messageElement.innerHTML = `<strong>Utilisateur:</strong> ${userMessage}<br><strong>Chatbot:</strong> ${chatbotMessage}`;
+            chatOutput.appendChild(messageElement);
+        });
     </script>
 </body>
 </html>
