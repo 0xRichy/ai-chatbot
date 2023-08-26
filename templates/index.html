@@ -2,53 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Web</title>
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Chatbot Web</h1>
-    
-    {% if not api_key %}
-        <form method="POST" action="/">
-            <label for="api_key">Clé d'API OpenAI :</label>
-            <input type="text" name="api_key" required>
-            <button type="submit">Valider</button>
-        </form>
-    {% endif %}
-    
-    {% if api_key %}
-        <form id="chat-form">
-            <input type="text" id="user-input" placeholder="Entrez votre message">
-            <button type="submit">Envoyer</button>
-        </form>
-        <div id="chat-output"></div>
-    {% endif %}
+    <header>
+        <h1>AI Chatbot</h1>
+    </header>
+    <div class="container">
+        <div class="chat-box" id="chatBox">
+            <!-- Les messages seront ajoutés ici -->
+        </div>
+        <input type="text" id="userInput" class="input-box" placeholder="Type your message...">
+        <button id="sendButton" class="send-button" onclick="sendMessage()">Send</button>
+    </div>
 
     <script>
-        const chatForm = document.getElementById("chat-form");
-        const userInput = document.getElementById("user-input");
-        const chatOutput = document.getElementById("chat-output");
+        function appendMessage(who, message) {
+            var chatBox = document.getElementById("chatBox");
+            var messageDiv = document.createElement("div");
+            messageDiv.className = who + "-message message";
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-        chatForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const userMessage = userInput.value;
-            userInput.value = "";
-
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `user_input=${userMessage}`,
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            appendMessage("user", userInput);
+            fetch(`/get?msg=${userInput}`).then(response => response.text()).then(data => {
+                appendMessage("bot", data);
             });
-
-            const responseData = await response.json();
-            const chatbotMessage = responseData.response;
-
-            const messageElement = document.createElement("p");
-            messageElement.innerHTML = `<strong>Utilisateur:</strong> ${userMessage}<br><strong>Chatbot:</strong> ${chatbotMessage}`;
-            chatOutput.appendChild(messageElement);
-        });
+            document.getElementById("userInput").value = "";
+        }
     </script>
 </body>
 </html>
