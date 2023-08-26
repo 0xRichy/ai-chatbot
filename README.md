@@ -14,6 +14,12 @@ Ce projet est un chatbot basé sur une application web. Il utilise HTML pour l'i
 - HTML
 - Python
 
+## Dépendances
+
+- Flask
+- ChatterBot
+- Autres (à spécifier)
+
 ## Installation
 
 ### Prérequis
@@ -52,9 +58,40 @@ Ce projet est un chatbot basé sur une application web. Il utilise HTML pour l'i
    ```
 2. Ouvrez votre navigateur et accédez à `http://localhost:5000`
 
+## Exemple de Code
+
+```python
+from your_chatbot_module import Chatbot
+
+# Initialiser le chatbot
+bot = Chatbot()
+
+# Interagir avec le chatbot
+response = bot.get_response("Bonjour")
+print(response)
+```
+
+## FAQ
+
+- **Q**: Comment puis-je contribuer au projet ?
+  - **R**: Vous pouvez créer une "issue" ou une "pull request".
+
+- **Q**: Où puis-je signaler des bugs ?
+  - **R**: Vous pouvez signaler des bugs en créant une "issue" sur GitHub.
+
 ## Contribution
 
 Si vous souhaitez contribuer à ce projet, veuillez créer une "issue" ou une "pull request".
+
+## Roadmap
+
+- Ajout de fonctionnalités de NLP
+- Amélioration de l'interface utilisateur
+- Support multilingue
+
+## Contact
+
+Pour toute question ou collaboration, vous pouvez me contacter.
 
 ## Licence
 
