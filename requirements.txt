@@ -1,3 +1,6 @@
 Flask
 ChatterBot
 requests
+Werkzeug
+spacy
+translate
