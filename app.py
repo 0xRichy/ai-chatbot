@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
 import sqlite3
 import requests
 import json
+from werkzeug.security import generate_password_hash, check_password_hash
+import spacy
+from translate import Translator
 
 app = Flask(__name__)
 
@@ -16,6 +19,13 @@ trainer.train("chatterbot.corpus.english")
 conn = sqlite3.connect('chatbot.db', check_same_thread=False)
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS interactions (user_query TEXT, bot_response TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS history (user_id TEXT, conversation TEXT)''')
+
+# Simule une base de données d'utilisateurs
+users = {}
+
+# Initialisation de spaCy
+nlp = spacy.load("en_core_web_sm")
 
 # Fonction pour effectuer une recherche Bing
 def bing_search(query):
@@ -28,6 +38,31 @@ def bing_search(query):
     search_results = response.json()
 
     return search_results['webPages']['value'][0]['snippet']
+
+# Fonction pour obtenir des entités NLP
+def get_entities(sentence):
+    doc = nlp(sentence)
+    return [(ent.text, ent.label_) for ent in doc.ents]
+
+# Fonction pour traduire le texte
+def translate_text(text, lang):
+    translator = Translator(to_lang=lang)
+    return translator.translate(text)
+
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    hashed_password = generate_password_hash(password, method='sha256')
+    users[username] = hashed_password
+    return jsonify({"message": "User registered"}), 201
+
+@app.route("/history")
+def get_history():
+    user_id = request.args.get("user_id")
+    c.execute("SELECT conversation FROM history WHERE user_id = ?", (user_id,))
+    history = c.fetchall()
+    return json.dumps(history)
 
 @app.route("/")
 def home():
