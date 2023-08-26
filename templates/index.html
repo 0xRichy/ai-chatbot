@@ -1,1 +1,32 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Web</title>
+</head>
+<body>
+    <h1>Chatbot Web</h1>
+    
+    {% if not api_key %}
+        <form method="POST" action="/">
+            <label for="api_key">Clé d'API OpenAI :</label>
+            <input type="text" name="api_key" required>
+            <button type="submit">Valider</button>
+        </form>
+    {% endif %}
+    
+    {% if api_key %}
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Entrez votre message">
+            <button type="submit">Envoyer</button>
+        </form>
+        <div id="chat-output"></div>
+    {% endif %}
+
+    <script>
+        // ...
+    </script>
+</body>
+</html>
